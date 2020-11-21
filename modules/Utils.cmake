@@ -1,3 +1,7 @@
+if(NOT STM32_TOOLCHAIN)
+  message(FATAL_ERROR "No STM32_TOOLCHAIN specified")
+endif()
+
 set(ARM_SIZE "${STM32_TOOLCHAIN}/bin/arm-none-eabi-size")
 set(ARM_OBJDUMP "${STM32_TOOLCHAIN}/bin/arm-none-eabi-objdump")
 
@@ -20,12 +24,21 @@ endfunction()
 
 function(STM32_TARGET_INSTALL TARGET)
   install(TARGETS ${TARGET}
-    DESTINATION bin ${CMAKE_INSTALL_BINDIR}
+    CONFIGURATIONS Release
+    RUNTIME DESTINATION Release/bin
   )
 
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/main.lst
-    DESTINATION bin ${CMAKE_INSTALL_BINDIR}
+  install(TARGETS ${TARGET}
+    CONFIGURATIONS Debug
+    RUNTIME DESTINATION Debug/bin
   )
+endfunction()
+
+
+function(STM32_TARGET_APP_RELEASE TARGET)
+  stm32_target_size(${TARGET})
+  stm32_target_listing(${TARGET})
+  stm32_target_install(${TARGET})
 endfunction()
 
 
