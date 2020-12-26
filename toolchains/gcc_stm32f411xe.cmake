@@ -1,5 +1,4 @@
-include(gcc_stm32)
-
+include(${CMAKE_CURRENT_LIST_DIR}/gcc_stm32.cmake)
 
 string(CONCAT C_FLAGS
   "-mcpu=cortex-m4 "
