@@ -1,15 +1,23 @@
-if(NOT STM32_TOOLCHAIN)
-  message(FATAL_ERROR "No STM32_TOOLCHAIN specified")
-endif()
-
-set(ARM_SIZE "${STM32_TOOLCHAIN}/bin/arm-none-eabi-size")
-set(ARM_OBJDUMP "${STM32_TOOLCHAIN}/bin/arm-none-eabi-objdump")
-
-
 function(STM32_TARGET_LISTING TARGET)
   get_target_property(TARGET_SUFFIX ${TARGET} SUFFIX)
   add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND
-    ${ARM_OBJDUMP} -h -D ${TARGET}${TARGET_SUFFIX} > ${TARGET}.lst
+    ${STM32_OBJDUMP} -h -D ${TARGET}${TARGET_SUFFIX} > ${TARGET}.lst
+  )
+endfunction()
+
+
+function(STM32_TARGET_HEX_FILE TARGET)
+  get_target_property(TARGET_SUFFIX ${TARGET} SUFFIX)
+  add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND
+    ${STM32_OBJCOPY} -O ihex ${TARGET}${TARGET_SUFFIX} ${TARGET}.hex
+  )
+endfunction()
+
+
+function(STM32_TARGET_BIN_FILE TARGET)
+  get_target_property(TARGET_SUFFIX ${TARGET} SUFFIX)
+  add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND
+    ${STM32_OBJCOPY} -O binary ${TARGET}${TARGET_SUFFIX} ${TARGET}.bin
   )
 endfunction()
 
@@ -17,7 +25,7 @@ endfunction()
 function(STM32_TARGET_SIZE TARGET)
   get_target_property(TARGET_SUFFIX ${TARGET} SUFFIX)
   add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND
-    ${ARM_SIZE} ${TARGET}${TARGET_SUFFIX}
+    ${STM32_SIZE} ${TARGET}${TARGET_SUFFIX}
   )
 endfunction()
 
@@ -36,7 +44,11 @@ endfunction()
 
 
 function(STM32_TARGET_APP_RELEASE TARGET)
+  set_property(TARGET ${TARGET} PROPERTY SUFFIX .elf)
+  target_compile_options(${TARGET} PRIVATE -Wl,-Map,${TARGET}.map)
   stm32_target_size(${TARGET})
+  stm32_target_hex_file(${TARGET})
+  stm32_target_bin_file(${TARGET})
   stm32_target_listing(${TARGET})
   stm32_target_install(${TARGET})
 endfunction()
