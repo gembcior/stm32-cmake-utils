@@ -45,7 +45,6 @@ endfunction()
 
 function(STM32_TARGET_APP_RELEASE TARGET)
   set_property(TARGET ${TARGET} PROPERTY SUFFIX .elf)
-  target_compile_options(${TARGET} PRIVATE -Wl,-Map,${TARGET}.map)
   stm32_target_size(${TARGET})
   stm32_target_hex_file(${TARGET})
   stm32_target_bin_file(${TARGET})
