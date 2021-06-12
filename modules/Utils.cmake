@@ -12,34 +12,38 @@ endfunction()
 
 function(STM32_TARGET_LISTING TARGET)
   get_target_property(TARGET_SUFFIX ${TARGET} SUFFIX)
-  add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND
-    ${STM32_OBJDUMP} -h -D -C ${TARGET}${TARGET_SUFFIX} > ${TARGET}.lst
+  add_custom_command(TARGET ${TARGET} 
+    POST_BUILD
+    COMMAND ${STM32_OBJDUMP} -h -D -C ${TARGET}${TARGET_SUFFIX} > ${TARGET}.lst
   )
-  stm32_file_install(${TARGET}.lst)
+  stm32_file_install(${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.lst)
 endfunction()
 
 
 function(STM32_TARGET_HEX_FILE TARGET)
   get_target_property(TARGET_SUFFIX ${TARGET} SUFFIX)
-  add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND
-    ${STM32_OBJCOPY} -O ihex ${TARGET}${TARGET_SUFFIX} ${TARGET}.hex
+  add_custom_command(TARGET ${TARGET}
+    POST_BUILD
+    COMMAND ${STM32_OBJCOPY} -O ihex ${TARGET}${TARGET_SUFFIX} ${TARGET}.hex
   )
-  stm32_file_install(${TARGET}.hex)
+  stm32_file_install(${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.hex)
 endfunction()
 
 
 function(STM32_TARGET_BIN_FILE TARGET)
   get_target_property(TARGET_SUFFIX ${TARGET} SUFFIX)
-  add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND
-    ${STM32_OBJCOPY} -O binary ${TARGET}${TARGET_SUFFIX} ${TARGET}.bin
+  add_custom_command(TARGET ${TARGET}
+    POST_BUILD
+    COMMAND ${STM32_OBJCOPY} -O binary ${TARGET}${TARGET_SUFFIX} ${TARGET}.bin
   )
-  stm32_file_install(${TARGET}.bin)
+  stm32_file_install(${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.bin)
 endfunction()
 
 
 function(STM32_TARGET_SIZE TARGET)
   get_target_property(TARGET_SUFFIX ${TARGET} SUFFIX)
-  add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND
+  add_custom_command(TARGET ${TARGET}
+    POST_BUILD COMMAND
     ${STM32_SIZE} ${TARGET}${TARGET_SUFFIX}
   )
 endfunction()
