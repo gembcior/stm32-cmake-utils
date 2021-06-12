@@ -1,7 +1,7 @@
 function(STM32_TARGET_LISTING TARGET)
   get_target_property(TARGET_SUFFIX ${TARGET} SUFFIX)
   add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND
-    ${STM32_OBJDUMP} -h -D ${TARGET}${TARGET_SUFFIX} > ${TARGET}.lst
+    ${STM32_OBJDUMP} -h -D -C ${TARGET}${TARGET_SUFFIX} > ${TARGET}.lst
   )
 endfunction()
 
