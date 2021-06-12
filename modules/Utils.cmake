@@ -1,8 +1,21 @@
+function(STM32_FILE_INSTALL FILE)
+  install(FILES ${FILE}
+    DESTINATION Release/etc
+    CONFIGURATIONS Release
+  )
+  install(FILES ${FILE}
+    DESTINATION Debug/etc
+    CONFIGURATIONS Debug
+  )
+endfunction()
+
+
 function(STM32_TARGET_LISTING TARGET)
   get_target_property(TARGET_SUFFIX ${TARGET} SUFFIX)
   add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND
     ${STM32_OBJDUMP} -h -D -C ${TARGET}${TARGET_SUFFIX} > ${TARGET}.lst
   )
+  stm32_file_install(${TARGET}.lst)
 endfunction()
 
 
@@ -11,6 +24,7 @@ function(STM32_TARGET_HEX_FILE TARGET)
   add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND
     ${STM32_OBJCOPY} -O ihex ${TARGET}${TARGET_SUFFIX} ${TARGET}.hex
   )
+  stm32_file_install(${TARGET}.hex)
 endfunction()
 
 
@@ -19,6 +33,7 @@ function(STM32_TARGET_BIN_FILE TARGET)
   add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND
     ${STM32_OBJCOPY} -O binary ${TARGET}${TARGET_SUFFIX} ${TARGET}.bin
   )
+  stm32_file_install(${TARGET}.bin)
 endfunction()
 
 
@@ -50,14 +65,4 @@ function(STM32_TARGET_APP_RELEASE TARGET)
   stm32_target_bin_file(${TARGET})
   stm32_target_listing(${TARGET})
   stm32_target_install(${TARGET})
-endfunction()
-
-
-# For Vim YouCompleteMe plugin purpose
-# Create symbolic link to compile_commands.json
-function(LINK_COMPILE_COMMANDS_FILE TARGET)
-  add_custom_command(TARGET ${TARGET}
-    POST_BUILD
-    COMMAND find ${CMAKE_BINARY_DIR} -type f -name "compile_commands.json" -exec ln -sf {} ${CMAKE_SOURCE_DIR} "\;"
-  )
 endfunction()
