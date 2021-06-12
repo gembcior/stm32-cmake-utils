@@ -28,11 +28,13 @@ endfunction()
 
 
 function(STM32_TARGET_TEST_LINK_MOCK_LIBRARIES TARGET)
-  list(TRANSFORM ${ARGN} APPEND _mock)
+  FOREACH (lib ${ARGN})
+    LIST(APPEND MOCKS "${lib}_mock")
+  ENDFOREACH()
 
   target_link_libraries(${TARGET}_test
     PRIVATE
-      ${ARGN}
+      ${MOCKS}
   )
 endfunction()
 
@@ -42,11 +44,11 @@ function(STM32_TARGET_ADD_MOCK_LIBRARY TARGET)
 
   target_include_directories(${TARGET}_mock
     INTERFACE
-      ${CMAKE_CURRENT_SOURCE_DIR}
+      ${CMAKE_CURRENT_SOURCE_DIR}/mock
   )
 
   target_link_libraries(${TARGET}_mock
-    PUBLIC
+    INTERFACE
       gtest
       gmock
       ${TARGET}
@@ -56,7 +58,7 @@ endfunction()
 
 function(STM32_TARGET_MOCK_LINK_LIBRARIES TARGET)
   target_link_libraries(${TARGET}_mock
-    PUBLIC
+    INTERFACE
       ${ARGN}
   )
 endfunction()
