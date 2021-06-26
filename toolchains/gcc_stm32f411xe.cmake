@@ -1,12 +1,14 @@
 include(${CMAKE_CURRENT_LIST_DIR}/gcc_stm32.cmake)
 
-string(CONCAT C_FLAGS
+string(CONCAT MCU_FLAGS
   "-mcpu=cortex-m4 "
   "-mfpu=fpv4-sp-d16 "
   "-mfloat-abi=hard "
   "-mabi=aapcs "
   "-mthumb "
-  "-std=gnu11 "
+)
+
+string(CONCAT GCC_FLAGS
   "-fno-builtin "
   "-Wall "
   "-Werror "
@@ -14,54 +16,36 @@ string(CONCAT C_FLAGS
   "-ffunction-sections "
   "-fdata-sections "
   "-fno-exceptions "
+  "-fno-unwind-tables"
   "-fstack-usage "
   "--specs=nano.specs "
   "-fomit-frame-pointer "
-  "-fno-unroll-loops "
   "-ffast-math "
   "-ftree-vectorize "
+)
+
+string(CONCAT C_FLAGS
+  ${MCU_FLAGS}
+  ${GCC_FLAGS}
+  "-std=gnu11 "
 )
 
 string(CONCAT CXX_FLAGS
-  "-mcpu=cortex-m4 "
-  "-mfpu=fpv4-sp-d16 "
-  "-mfloat-abi=hard "
-  "-mabi=aapcs "
-  "-mthumb "
-  "-fno-builtin "
-  "-Wall "
-  "-Werror "
-  "-Wfatal-errors "
-  "-ffunction-sections "
-  "-fdata-sections "
-  "-fno-exceptions "
+  ${MCU_FLAGS}
+  ${GCC_FLAGS}
   "-fno-rtti "
   "-fno-threadsafe-statics "
   "-fno-use-cxa-atexit "
-  "-fstack-usage "
-  "--specs=nano.specs "
-  "-fomit-frame-pointer "
-  "-fno-unroll-loops "
-  "-ffast-math "
-  "-ftree-vectorize "
 )
 
 string(CONCAT ASM_FLAGS
-  "-mcpu=cortex-m4 "
-  "-mfpu=fpv4-sp-d16 "
-  "-mfloat-abi=hard "
-  "-mabi=aapcs "
-  "-mthumb "
+  ${MCU_FLAGS}
   "-x assembler-with-cpp "
   "--specs=nano.specs "
 )
 
 string(CONCAT LINKER_FLAGS
-  "-mcpu=cortex-m4 "
-  "-mfpu=fpv4-sp-d16 "
-  "-mfloat-abi=hard "
-  "-mabi=aapcs "
-  "-mthumb "
+  ${MCU_FLAGS}
   "-Wl,--gc-sections "
   "-Wl,-lc,-lm "
   "-static "
