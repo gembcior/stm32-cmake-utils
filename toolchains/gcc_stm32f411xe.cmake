@@ -16,7 +16,7 @@ string(CONCAT GCC_FLAGS
   "-ffunction-sections "
   "-fdata-sections "
   "-fno-exceptions "
-  "-fno-unwind-tables"
+  "-fno-unwind-tables "
   "-fstack-usage "
   "--specs=nano.specs "
   "-fomit-frame-pointer "
